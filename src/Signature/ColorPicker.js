@@ -4,7 +4,7 @@ import styles from './ColorPicker.less';
 
 //简易颜色选择器
 const ColorPicker = (props, ref) => {
-  const [color, setColor] = useState('#cdd6e0');
+  const [color, setColor] = useState('#090e27');
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
   const handleChange = (color) => {
     setColor(color.hex);
@@ -19,7 +19,8 @@ const ColorPicker = (props, ref) => {
     color,
   }));
   return (
-    <div>
+    <div className={styles.layout}>
+      颜色：
       <div className={styles.swatch} style={{ background: color }} onClick={handleClick}>
         <div className={styles.color} />
       </div>

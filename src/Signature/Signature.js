@@ -1,24 +1,22 @@
-import { useState, useRef } from 'react';
-import { Button, Space } from 'antd';
+import { useState, useRef, isValidElement } from 'react';
 import ColorPicker from './ColorPicker';
+import { historyMock } from './historyMock';
 
 // 画布签名组件
-const url =
-  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAzQAAAEsCAYAAAAVaPaoAAAAAXNSR0IArs4c6QAAGE1JREFUeF7t3VuPHFcVBeAdzCXYWIBRDBEEiYuAFyT4hzzxwn/jIQ8gIQQSAQKOMMrFIYBN0BFd6FDUTE88M92zan+WWjMe29N7f+tI0VJVTV4pvwgQIECAAAECBAgQIBAq8Ero3MYmQIAAAQIECBAgQIBAKTQOAQECBAgQIECAAAECsQIKTWx0BidAgAABAgQIECBAQKFxBggQIECAAAECBAgQiBVQaGKjMzgBAgQIECBAgAABAgqNM0CAAAECBAgQIECAQKyAQhMbncEJECBAgAABAgQIEFBonAECBAgQIECAAAECBGIFFJrY6AxOgAABAgQIECBAgIBC4wwQIECAAAECBAgQIBAroNDERmdwAgQIECBAgAABAgQUGmeAAAECBAgQIECAAIFYAYUmNjqDEyBAgAABAgQIECCg0DgDBAgQIECAAAECBAjECig0sdEZnAABAgQIECBAgAABhcYZIECAAAECBAgQIEAgVkChiY3O4AQIECBAgAABAgQIKDTOAAECBAgQIECAAAECsQIKTWx0BidAgAABAgQIECBAQKFxBggQIECAAAECBAgQiBVQaGKjMzgBAgQIECBAgAABAgqNM0CAAAECBAgQIECAQKyAQhMbncEJECBAgAABAgQIEFBonAECBAgQIECAAAECBGIFFJrY6AxOgAABAgQIECBAgIBC4wwQIECAAAECBAgQIBAroNDERmdwAgQIECBAgAABAgQUGmeAAAECBAgQIECAAIFYAYUmNjqDEyBAgAABAgQIECCg0DgDBAgQIECAAAECBAjECig0sdEZnAABAgQIECBAgAABhcYZIECAAAECBAgQIEAgVkChiY3O4AQIECBAgAABAgQIKDTOAAECBAgQIECAAAECsQIKTWx0BidAgAABAgQIECBAQKFxBggQIECAAAECBAgQiBVQaGKjMzgBAgQIECBAgAABAgqNM0CAAAECBAgQIECAQKyAQhMbncEJECBAgAABAgQIEFBonAECBAgQIECAAAECBGIFFJrY6AxOgAABAgQIECBAgIBC4wwQIECAAAECBAgQIBAroNDERmdwAgQIECBAgAABAgQUGmeAAAECBAgQIECAAIFYAYUmNjqDEyBAgAABAgQIECCg0DgDBAgQIECAAAECBAjECig0sdEZnAABAgQIECBAgAABhcYZIECAAAECBAgQIEAgVkChiY3O4AQIECBAgAABAgQIKDTOAAECBAgQIECAAAECsQIKTWx0BidAgAABAgQIECBAQKFxBggQIECAAAECBAgQiBVQaGKjMzgBAgQIECBAgAABAgqNM0CAAAECBAgQIECAQKyAQhMbncEJECBAgAABAgQIEFBonAECBAgQIECAAAECBGIFFJrY6AxOgAABAgQIECBAgIBC4wwQIECAAAECBAgQIBAroNDERmdwAgQIECBAgAABAgQUGmeAAAECBAgQIECAAIFYAYUmNjqDEyBAgAABAgQIECCg0DgDBAgQIECAAAECBAjECig0sdEZnAABAgQIECBAgAABhcYZIECAAAECBAgQIEAgVkChiY3O4AQIECBAgAABAgQIKDTOAAECBAgQIECAAAECsQIKTWx0BidAgAABAgQIECBAQKFxBggQIECAAAECBAgQiBVQaGKjMzgBAgQIECBAgAABAgqNM0CAAAECBAgQIECAQKyAQhMbncEJECBAgAABAgQIEFBonAECBAgQIECAAAECBGIFFJrY6AxOgAABAgQIECBAgIBC4wwQIECAAAECBAgQIBAroNDERmdwAgQIECBAgAABAgQUGmeAAAECBAgQIECAAIFYAYUmNjqDEyBAgAABAgQIECCg0DgDBAgQIECAAAECBAjECig0sdEZnAABAgQIECBAgAABhcYZIECAAAECBAgQIEAgVkChiY3O4AQIECBAgAABAgQIKDTOAAECBAgQIECAAAECsQIKTWx0BidAgAABAgQIECBAQKFxBggQIECAAAECBAgQiBVQaGKjMzgBAgQIECBAgAABAgqNM0CAAAECBAgQIECAQKyAQhMbncEJECBAgAABAgQIEFBonAECBAgQIECAAAECBGIFFJrY6AxOgAABAgQIECBAgIBC4wwQIECAAAECBAgQIBAroNDERmdwAgQIECBAgAABAgQUGmeAAAECBAgQIECAAIFYAYUmNjqDEyBAgAABAgQIECCg0DgDBAgQIECAAAECBAjECig0sdEZnAABAgQIECBAgAABhcYZIECAAAECBAgQIEAgVkChiY3O4AQIECBAgAABAgQIKDTOAAECBAgQuHsCn6mqB1V1//Dxos+XP//p3VvBRAQI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IECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBZQaBqHb3UCBAgQIECAAAEC6QIKTXqC5idAgAABAgQIECDQWEChaRy+1QkQIECAAAECBAikCyg06QmanwABAgQIECBAgEBjAYWmcfhWJ0CAAAECBAgQIJAuoNCkJ2h+AgQIECBAgAABAo0FFJrG4VudAAECBAgQIECAQLqAQpOeoPkJECBAgAABAgQINBb4N3dHijw6fwKyAAAAAElFTkSuQmCC';
 const Signature = ({
-  historyUrl = '',
-  historyParams,
-  showBtn,
-  onConfirm,
-  width = 820,
-  height = 300,
+  historyUrl = false, //历史签名的url
+  historyParams = {}, //历史签名的参数
+  showBtn = true, //是否显示按钮
+  onConfirm, //点击确定的回调
+  width = 820, //画布宽度
+  height = 300, //画布高度
+  needPreview = true, //是否需要预览
 }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [drawingSteps, setDrawingSteps] = useState([]);
   const [lastX, setLastX] = useState(0);
   const [lastY, setLastY] = useState(0);
   const [dataURL, setDataURL] = useState('');
-  const [color, setColor] = useState('#aabbcc');
 
   const colorPickerRef = useRef(null);
   // 定义一个临时变量用于存储当前笔画步骤
@@ -35,13 +33,13 @@ const Signature = ({
       setDrawingSteps([]);
     };
     //这里是demo效果，暂时放到了localStorage里，正常情况你可以存到数据库
+    // const res = await historyUrl(historyParams);
     const tmp = localStorage.getItem('tmpUrl');
-    console.log('tmp: ', tmp);
-    img.src = tmp || url;
+    img.src = historyUrl || tmp || historyMock;
   };
 
   const handleMouseMove = (e) => {
-    const colors = colorPickerRef.current.color;
+    const colors = colorPickerRef.current?.color;
     if (!isDrawing) return;
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
@@ -54,7 +52,7 @@ const Signature = ({
     context.stroke();
     setLastX(newX);
     setLastY(newY);
-    setDrawingSteps([...drawingSteps, { lastX, lastY, newX, newY }]);
+    setDrawingSteps([...drawingSteps, { lastX, lastY, newX, newY, color: colors }]);
   };
   const handleMouseDown = (e) => {
     setIsDrawing(true);
@@ -78,6 +76,7 @@ const Signature = ({
         context.beginPath();
         context.moveTo(step.lastX, step.lastY);
         context.lineTo(step.newX, step.newY);
+        context.strokeStyle = step.color; // 恢复之前的颜色
         context.stroke();
       });
       setDrawingSteps(drawingSteps.slice(0, -1));
@@ -89,7 +88,7 @@ const Signature = ({
     e.preventDefault();
     const canvas = canvasRef.current;
     const tmpImg = canvas.toDataURL();
-    console.log('tmpImg: ', tmpImg);
+    // console.log('tmpImg: ', tmpImg);
     setDataURL(tmpImg);
     onConfirm(tmpImg);
     localStorage.setItem('tmpUrl', tmpImg); //模拟存到数据库
@@ -104,9 +103,6 @@ const Signature = ({
     setDataURL('');
     setDrawingSteps([]);
   };
-  const getColor = (color) => {
-    setColor(color);
-  };
   return (
     <div>
       <canvas
@@ -119,19 +115,35 @@ const Signature = ({
         onMouseMove={handleMouseMove}
       ></canvas>
       {showBtn && (
-        <div style={{ display: 'flex', justifyContent: 'center', margin: '5px 0px' }}>
-          <Space>
-            <ColorPicker ref={colorPickerRef} />
-            <Button onClick={(e) => undoStep(e)}>上一步</Button>
-            <Button onClick={(e) => clearAll(e)}>重新签名</Button>
-            <Button onClick={(e) => historyImgChange(e)}>历史签名</Button>
-            <Button type="primary" onClick={(e) => generateOk(e)}>
-              生成图片
-            </Button>
-          </Space>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            alignContent: 'center',
+            margin: '5px 2px',
+          }}
+        >
+          {isValidElement(showBtn) ? (
+            showBtn
+          ) : typeof showBtn === 'function' ? (
+            showBtn()
+          ) : (
+            <>
+              <span>
+                <ColorPicker ref={colorPickerRef} />
+              </span>
+              <button onClick={(e) => undoStep(e)}>上一步</button>
+              <button onClick={(e) => clearAll(e)}>重新签名</button>
+              <button onClick={(e) => historyImgChange(e)}>历史签名</button>
+              <button type="primary" onClick={(e) => generateOk(e)}>
+                生成图片
+              </button>
+            </>
+          )}
         </div>
       )}
-      {!!dataURL && (
+      {!!dataURL && needPreview && (
         <img src={dataURL} width={width} height={height} style={{ border: '1px solid #000' }} />
       )}
     </div>
