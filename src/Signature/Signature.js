@@ -131,7 +131,8 @@ const Signature = ({
           ) : (
             <>
               <span>
-                <ColorPicker ref={colorPickerRef} />
+                {' '}
+                <ColorPicker ref={colorPickerRef} />{' '}
               </span>
               <button onClick={(e) => undoStep(e)}>上一步</button>
               <button onClick={(e) => clearAll(e)}>重新签名</button>
