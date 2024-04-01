@@ -1,6 +1,7 @@
 import { useState, useRef, isValidElement } from 'react';
 import ColorPicker from './ColorPicker';
 import { historyMock } from './historyMock';
+import ReactToPrint from 'react-to-print';
 
 // 画布签名组件
 const Signature = ({
@@ -17,6 +18,7 @@ const Signature = ({
   const [lastX, setLastX] = useState(0);
   const [lastY, setLastY] = useState(0);
   const [dataURL, setDataURL] = useState('');
+  const domRef = useRef();
 
   const colorPickerRef = useRef(null);
   // 定义一个临时变量用于存储当前笔画步骤
@@ -136,15 +138,25 @@ const Signature = ({
               <button onClick={(e) => undoStep(e)}>上一步</button>
               <button onClick={(e) => clearAll(e)}>重新签名</button>
               <button onClick={(e) => historyImgChange(e)}>历史签名</button>
-              <button type="primary" onClick={(e) => generateOk(e)}>
-                生成图片
-              </button>
+              <button onClick={(e) => generateOk(e)}>生成图片</button>
+              {!!dataURL && needPreview && (
+                <ReactToPrint
+                  trigger={() => <button>打印</button>}
+                  content={() => domRef.current}
+                />
+              )}
             </>
           )}
         </div>
       )}
       {!!dataURL && needPreview && (
-        <img src={dataURL} width={width} height={height} style={{ border: '1px solid #000' }} />
+        <img
+          src={dataURL}
+          ref={domRef}
+          width={width}
+          height={height}
+          style={{ border: '1px solid #000' }}
+        />
       )}
     </div>
   );
