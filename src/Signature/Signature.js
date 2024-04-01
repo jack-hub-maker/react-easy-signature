@@ -12,6 +12,7 @@ const Signature = ({
   width = 820, //画布宽度
   height = 300, //画布高度
   needPreview = true, //是否需要预览
+  needPrint = true, //是否需要打印
 }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [drawingSteps, setDrawingSteps] = useState([]);
@@ -139,7 +140,7 @@ const Signature = ({
               <button onClick={(e) => clearAll(e)}>重新签名</button>
               <button onClick={(e) => historyImgChange(e)}>历史签名</button>
               <button onClick={(e) => generateOk(e)}>生成图片</button>
-              {!!dataURL && needPreview && (
+              {!!dataURL && needPreview && needPrint && (
                 <ReactToPrint
                   trigger={() => <button>打印</button>}
                   content={() => domRef.current}
