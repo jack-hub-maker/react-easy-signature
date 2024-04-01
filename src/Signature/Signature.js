@@ -2,6 +2,7 @@ import { useState, useRef, isValidElement } from 'react';
 import ColorPicker from './ColorPicker';
 import { historyMock } from './historyMock';
 import ReactToPrint from 'react-to-print';
+import styles from './Signature.less';
 
 // 画布签名组件
 const Signature = ({
@@ -136,13 +137,21 @@ const Signature = ({
               <span>
                 <ColorPicker ref={colorPickerRef} />
               </span>
-              <button onClick={(e) => undoStep(e)}>上一步</button>
-              <button onClick={(e) => clearAll(e)}>重新签名</button>
-              <button onClick={(e) => historyImgChange(e)}>历史签名</button>
-              <button onClick={(e) => generateOk(e)}>生成图片</button>
+              <div className={styles.btnCommon} onClick={(e) => undoStep(e)}>
+                上一步
+              </div>
+              <div className={styles.btnCommon} onClick={(e) => clearAll(e)}>
+                重新签名
+              </div>
+              <div className={styles.btnCommon} onClick={(e) => historyImgChange(e)}>
+                历史签名
+              </div>
+              <div className={styles.btnCommon} onClick={(e) => generateOk(e)}>
+                生成图片
+              </div>
               {!!dataURL && needPreview && needPrint && (
                 <ReactToPrint
-                  trigger={() => <button>打印</button>}
+                  trigger={() => <div className={styles.btnCommon}>打印</div>}
                   content={() => domRef.current}
                 />
               )}
