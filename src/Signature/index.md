@@ -41,3 +41,4 @@ export default () => (
 | showBtn | 是否显示功能按钮或者添加自己的按钮 | `boolean` \| `ReactNode` \| `function` | true |
 | onConfirm | 点击确定的回调 | `function` | (value:any)=>{} |
 | needPreview | 是否需要图像预览 | `boolean` | true |
+| needPrint | 是否需要图像打印 | `boolean` | true |
