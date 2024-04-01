@@ -14,7 +14,7 @@ import { Signature } from 'react-easy-signature';
 
 const signatureWidth = window.innerWidth - 600;
 export default () => (
-  // showBtn大多数时候你可以自己写几个你需要的按钮，这里只是演示
+  // showBtn大多数时候你可以自己写几个你需要的按钮，这里只是演示，一些个性化的需求可以根据你自己的需求来写
   <Signature
     width={signatureWidth}
     // btnText="手签"

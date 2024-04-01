@@ -7,7 +7,7 @@ const Signature = ({
   historyUrl = false, //历史签名的url
   historyParams = {}, //历史签名的参数
   showBtn = true, //是否显示按钮
-  onConfirm, //点击确定的回调
+  onConfirm, //点击确定给父组件的回调
   width = 820, //画布宽度
   height = 300, //画布高度
   needPreview = true, //是否需要预览
@@ -131,8 +131,7 @@ const Signature = ({
           ) : (
             <>
               <span>
-                {' '}
-                <ColorPicker ref={colorPickerRef} />{' '}
+                <ColorPicker ref={colorPickerRef} />
               </span>
               <button onClick={(e) => undoStep(e)}>上一步</button>
               <button onClick={(e) => clearAll(e)}>重新签名</button>
