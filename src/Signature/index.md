@@ -24,7 +24,6 @@ export default () => (
     // historyParams={{ uuid: 'xx' }}
     onConfirm={(value: any) => {
       console.log('value-sign: ', value);
-      //do something
     }}
   />
 );

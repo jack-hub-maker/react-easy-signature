@@ -1,6 +1,6 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { SketchPicker } from 'react-color';
-import styles from './ColorPicker.less';
+import './ColorPicker.less';
 
 //简易颜色选择器
 const ColorPicker = (props, ref) => {
@@ -19,14 +19,14 @@ const ColorPicker = (props, ref) => {
     color,
   }));
   return (
-    <div className={styles.layout}>
+    <div className="layout">
       颜色：
-      <div className={styles.swatch} style={{ background: color }} onClick={handleClick}>
-        <div className={styles.color} />
+      <div className="swatch" style={{ background: color }} onClick={handleClick}>
+        <div className="color" />
       </div>
       {displayColorPicker ? (
-        <div className={styles.popover}>
-          <div className={styles.cover} onClick={handleClose} />
+        <div className="popover">
+          <div className="cover" onClick={handleClose} />
           <SketchPicker color={color} onChange={handleChange} />
         </div>
       ) : null}

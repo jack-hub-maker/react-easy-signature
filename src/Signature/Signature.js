@@ -1,8 +1,8 @@
-import { useState, useRef, isValidElement } from 'react';
+import React, { useState, useRef, isValidElement } from 'react';
 import ColorPicker from './ColorPicker';
 import { historyMock } from './historyMock';
 import ReactToPrint from 'react-to-print';
-import styles from './Signature.less';
+import './Signature.less';
 
 // 画布签名组件
 const Signature = ({
@@ -25,6 +25,13 @@ const Signature = ({
   const colorPickerRef = useRef(null);
   // 定义一个临时变量用于存储当前笔画步骤
   const canvasRef = useRef(null);
+  // 判断是否是移动端设备
+  function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent,
+    );
+  }
+  console.log('isMobileDevice: ', isMobileDevice());
   //历史签名
   const historyImgChange = async (e) => {
     e.preventDefault();
@@ -47,8 +54,8 @@ const Signature = ({
     if (!isDrawing) return;
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
-    const newX = e.nativeEvent.offsetX;
-    const newY = e.nativeEvent.offsetY;
+    const newX = isMobileDevice() ? e.touches[0].pageX : e.nativeEvent.offsetX;
+    const newY = isMobileDevice() ? e.touches[0].pageY : e.nativeEvent.offsetY;
     context.beginPath();
     context.moveTo(lastX, lastY);
     context.lineTo(newX, newY);
@@ -60,8 +67,13 @@ const Signature = ({
   };
   const handleMouseDown = (e) => {
     setIsDrawing(true);
-    setLastX(e.nativeEvent.offsetX);
-    setLastY(e.nativeEvent.offsetY);
+    if (isMobileDevice() && e.touches) {
+      setLastX(e.touches[0]?.pageX);
+      setLastY(e.touches[0]?.pageY);
+    } else {
+      setLastX(e.nativeEvent?.offsetX);
+      setLastY(e.nativeEvent?.offsetY);
+    }
   };
 
   const handleMouseUp = () => {
@@ -94,7 +106,9 @@ const Signature = ({
     const tmpImg = canvas.toDataURL();
     // console.log('tmpImg: ', tmpImg);
     setDataURL(tmpImg);
-    onConfirm(tmpImg);
+    if (onConfirm) {
+      onConfirm(tmpImg);
+    }
     localStorage.setItem('tmpUrl', tmpImg); //模拟存到数据库
     return tmpImg;
   };
@@ -119,54 +133,40 @@ const Signature = ({
         onMouseMove={handleMouseMove}
       ></canvas>
       {showBtn && (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            alignContent: 'center',
-            margin: '5px 2px',
-          }}
-        >
+        <div>
           {isValidElement(showBtn) ? (
             showBtn
           ) : typeof showBtn === 'function' ? (
             showBtn()
           ) : (
-            <>
-              <span>
+            <div className="content">
+              <div>
                 <ColorPicker ref={colorPickerRef} />
-              </span>
-              <div className={styles.btnCommon} onClick={(e) => undoStep(e)}>
+              </div>
+              <div className="btnCommon" onClick={(e) => undoStep(e)}>
                 上一步
               </div>
-              <div className={styles.btnCommon} onClick={(e) => clearAll(e)}>
+              <div className="btnCommon" onClick={(e) => clearAll(e)}>
                 重新签名
               </div>
-              <div className={styles.btnCommon} onClick={(e) => historyImgChange(e)}>
+              <div className="btnCommon" onClick={(e) => historyImgChange(e)}>
                 历史签名
               </div>
-              <div className={styles.btnCommon} onClick={(e) => generateOk(e)}>
+              <div className="btnCommon" onClick={(e) => generateOk(e)}>
                 生成图片
               </div>
               {!!dataURL && needPreview && needPrint && (
                 <ReactToPrint
-                  trigger={() => <div className={styles.btnCommon}>打印</div>}
+                  trigger={() => <div className="btnCommon">打印</div>}
                   content={() => domRef.current}
                 />
               )}
-            </>
+            </div>
           )}
         </div>
       )}
       {!!dataURL && needPreview && (
-        <img
-          src={dataURL}
-          ref={domRef}
-          width={width}
-          height={height}
-          style={{ border: '1px solid #000' }}
-        />
+        <img src={dataURL} ref={domRef} width={width} height={height} className="border" />
       )}
     </div>
   );
